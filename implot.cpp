@@ -3673,6 +3673,22 @@ void SetAxes(ImAxis x_idx, ImAxis y_idx) {
     gp.CurrentPlot->CurrentY = y_idx;
 }
 
+void SetRange(ImAxis idx, const ImPlotRange& range) {
+    ImPlotContext& gp = *GImPlot;
+    IM_ASSERT_USER_ERROR(gp.CurrentPlot != nullptr && !gp.CurrentPlot->SetupLocked,
+                         "Setup needs to be called after BeginPlot and before any setup locking functions (e.g. PlotX)!");    // get plot and axis
+    ImPlotPlot& plot = *gp.CurrentPlot;
+    ImPlotAxis& axis = plot.Axes[idx];
+    IM_ASSERT_USER_ERROR(axis.Enabled, "Axis is not enabled! Did you forget to call SetupAxis()?");
+  
+    axis.Range = range;
+}
+
+void SetRect(const ImPlotRect& rect) {
+    SetRange(ImAxis_X1, rect.X);
+    SetRange(ImAxis_Y1, rect.Y);
+}
+
 ImPlotPoint PixelsToPlot(float x, float y, ImAxis x_idx, ImAxis y_idx) {
     ImPlotContext& gp = *GImPlot;
     IM_ASSERT_USER_ERROR(gp.CurrentPlot != nullptr, "PixelsToPlot() needs to be called between BeginPlot() and EndPlot()!");
